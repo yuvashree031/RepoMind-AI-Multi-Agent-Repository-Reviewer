@@ -92,11 +92,6 @@ The following images demonstrate the project flow and features.
 
 ![Full Report](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/full_report.png)
 
-## Demo Video
-
-The following video demonstrates RepoMind AI in action, including the multi-agent review workflow.
-
-[▶ RepoMind AI – Multi-Agent Repository Reviewer](https://github.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/blob/master/RepoMind%20AI%20-%20images/RepoMind%20AI%20%E2%80%93%20Multi-Agent%20Repository%20Reviewer.mp4)
 
 ## Notes
 
