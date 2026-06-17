@@ -1,0 +1,22 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Local environment files
+backend/.env
+
+# Node
+node_modules/
+.next/
+out/
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
