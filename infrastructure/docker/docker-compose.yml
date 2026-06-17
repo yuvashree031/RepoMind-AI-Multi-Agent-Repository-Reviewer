@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. PostgreSQL DB
+  # 1. PostgreSQL DB - if local database or else use online database (Mongo DB)
   db:
     image: postgres:15-alpine
     container_name: repomind_db
