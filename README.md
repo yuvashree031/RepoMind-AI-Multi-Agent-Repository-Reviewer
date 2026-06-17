@@ -2,6 +2,10 @@
 
 RepoMind AI is an automated repository auditing platform that combines a FastAPI backend with a Next.js frontend. It uses AI-driven agents to analyze source code repositories for security vulnerabilities, code quality issues, architecture insights, and DevOps best practices.
 
+## Live Demo
+
+[RepoMind AI](https://repo-mind-ai-multi-agent-repository.vercel.app/)
+
 ## Project Overview
 
 The project is divided into two main parts:
