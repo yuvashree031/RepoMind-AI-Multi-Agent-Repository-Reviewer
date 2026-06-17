@@ -48,55 +48,51 @@ Install npm dependencies in `frontend/` and start the Next.js dev server with `n
 
 The following images demonstrate the project flow and features.
 
-1. Sign In
+### 1. Sign In
 
-![Sign In](RepoMind AI - images/sign.png)
+![Sign In](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/sign.png)
 
-2. Register
+### 2. Register
 
-![Register](RepoMind AI - images/register.png)
+![Register](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/register.png)
 
-3. Dashboard
+### 3. Dashboard
 
-![Dashboard](RepoMind AI - images/dashboard.png)
+![Dashboard](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/dashboard.png)
 
-4. Analyze
+### 4. Analyze
 
-![Analyze](RepoMind AI - images/analyze.png)
+![Analyze](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/analyze.png)
 
-5. Summary
+### 5. Summary
 
-![Summary](RepoMind AI - images/summary.png)
+![Summary](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/summary.png)
 
-6. Language Detection
+### 6. Language Detection
 
-![Language Detection](RepoMind AI - images/language.png)
+![Language Detection](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/language.png)
 
-7. Code Quality
+### 7. Code Quality
 
-![Code Quality](RepoMind AI - images/code.png)
+![Code Quality](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/code.png)
 
-8. Architecture Map
+### 8. Architecture Map
 
-![Architecture Map](RepoMind AI - images/map.png)
+![Architecture Map](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/map.png)
 
-9. DevOps Review
+### 9. DevOps Review
 
-![DevOps Review](RepoMind AI - images/devOps.png)
+![DevOps Review](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/devOps.png)
 
-10. Full Report
+### 10. Full Report
 
-![Full Report](RepoMind AI - images/full_report.png)
+![Full Report](https://raw.githubusercontent.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/master/RepoMind%20AI%20-%20images/full_report.png)
 
 ## Demo Video
 
 The following video demonstrates RepoMind AI in action, including the multi-agent review workflow.
 
-<video controls width="800">
-  <source src="RepoMind AI - images/RepoMind AI – Multi-Agent Repository Reviewer.mp4" type="video/mp4">
-  Your browser does not support the video tag. You can view the video directly here:
-  [RepoMind AI – Multi-Agent Repository Reviewer](RepoMind AI - images/RepoMind AI – Multi-Agent Repository Reviewer.mp4)
-</video>
+[▶ RepoMind AI – Multi-Agent Repository Reviewer](https://github.com/yuvashree031/RepoMind-AI-Multi-Agent-Repository-Reviewer/blob/master/RepoMind%20AI%20-%20images/RepoMind%20AI%20%E2%80%93%20Multi-Agent%20Repository%20Reviewer.mp4)
 
 ## Notes
 
