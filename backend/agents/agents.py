@@ -883,19 +883,24 @@ Below is the system structural mapping compiled by the Architecture Agent:
 - Remediation: {fnd.get('recommendation')}
 """
             
-    report += """
----
-
-## 7. Actionable Roadmap & Priority Steps
-1. Critical Actions (Next 24-48 Hours):
-   - Resolve any Critical or High security findings (secrets removal, SQLi parameterized bindings).
-2. Short Term (Next 1-2 Weeks):
-   - Introduce unit testing configurations and automate runs inside a CI/CD GitHub action.
-   - Refactor bloated helper scripts or functions exceeding cyclomatic complexity guidelines.
-3. Strategic Improvements (Next 1-3 Months):
-   - Restructure modular service classes to decouple database models from presentation APIs.
-   - Secure Docker container image builds by setting up custom, non-privileged system user logins.
-"""
+    roadmap_items = []
+    if criticals > 0 or highs > 0:
+        roadmap_items.append(f"Immediate: Resolve the {criticals + highs} critical/high security findings identified in Section 4.")
+    elif security_findings:
+        roadmap_items.append("Immediate: Review and address the reported security weaknesses.")
+        
+    if quality_findings:
+        roadmap_items.append(f"Short Term: Refactor the {len(quality_findings)} code quality and complexity items to improve maintainability.")
+        
+    if devops_findings:
+        roadmap_items.append("Medium Term: Enhance CI/CD automation and container deployment configurations.")
+        
+    if not roadmap_items:
+        roadmap_items.append("Maintain current code standards and keep project dependencies up to date.")
+        
+    report += "\n---\n\n## 7. Actionable Roadmap & Priority Steps\n"
+    for i, item in enumerate(roadmap_items, 1):
+        report += f"{i}. {item}\n"
     
     agent_logs.append("Report Agent complete. Full engineering audit compiled successfully.")
     
