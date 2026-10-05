@@ -189,37 +189,142 @@ export default function ReviewDetailPage() {
   
   const renderMarkdownText = (md: string) => {
     const lines = md.split('\n');
-    return lines.map((line, idx) => {
-      if (line.startsWith('# ')) {
-        return <h1 key={idx} className="text-2xl font-bold text-white mt-6 mb-3 border-b border-zinc-800 pb-2">{line.replace('# ', '')}</h1>;
+    let inCodeBlock = false;
+    let codeBlockLines: string[] = [];
+
+    const cleanText = (text: string) => {
+      return text.replace(/\*\*/g, '').replace(/\*/g, '');
+    };
+
+    return lines.map((rawLine, idx) => {
+      const trimmed = rawLine.trim();
+
+      if (trimmed.startsWith('```')) {
+        inCodeBlock = !inCodeBlock;
+        if (!inCodeBlock) {
+          const content = codeBlockLines.join('\n');
+          codeBlockLines = [];
+          return (
+            <pre key={idx} className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-300 overflow-x-auto my-3">
+              <code>{content}</code>
+            </pre>
+          );
+        }
+        return null;
       }
-      if (line.startsWith('## ')) {
-        return <h2 key={idx} className="text-xl font-bold text-zinc-100 mt-5 mb-2.5">{line.replace('## ', '')}</h2>;
+
+      if (inCodeBlock) {
+        codeBlockLines.push(rawLine);
+        return null;
       }
-      if (line.startsWith('### ')) {
-        return <h3 key={idx} className="text-lg font-semibold text-zinc-200 mt-4 mb-2">{line.replace('### ', '')}</h3>;
-      }
-      if (line.startsWith('- ') || line.startsWith('* ')) {
-        return <li key={idx} className="text-zinc-400 ml-4 list-disc mb-1 leading-relaxed">{line.replace(/^[-*]\s+/, '')}</li>;
-      }
-      if (line.startsWith('|')) {
-        
-        if (line.includes('---')) return null; 
-        const cells = line.split('|').map(c => c.trim()).filter((c, i, a) => i > 0 && i < a.length - 1);
+
+      if (trimmed.startsWith('#### ')) {
+        const text = cleanText(trimmed.replace(/^#+\s*/, ''));
         return (
-          <div key={idx} className="grid grid-cols-3 gap-4 py-2 border-b border-zinc-900 text-sm font-mono text-zinc-400">
+          <h4 key={idx} className="text-base font-semibold text-zinc-100 mt-4 mb-1.5">
+            {text}
+          </h4>
+        );
+      }
+      if (trimmed.startsWith('### ')) {
+        const text = cleanText(trimmed.replace(/^#+\s*/, ''));
+        return (
+          <h3 key={idx} className="text-lg font-semibold text-zinc-200 mt-4 mb-2">
+            {text}
+          </h3>
+        );
+      }
+      if (trimmed.startsWith('## ')) {
+        const text = cleanText(trimmed.replace(/^#+\s*/, ''));
+        return (
+          <h2 key={idx} className="text-xl font-bold text-zinc-100 mt-5 mb-2.5">
+            {text}
+          </h2>
+        );
+      }
+      if (trimmed.startsWith('# ')) {
+        const text = cleanText(trimmed.replace(/^#+\s*/, ''));
+        return (
+          <h1 key={idx} className="text-2xl font-bold text-white mt-6 mb-3 border-b border-zinc-800 pb-2">
+            {text}
+          </h1>
+        );
+      }
+
+      const findingMatch = trimmed.match(/^\[(Critical|High|Medium|Low)\]\s*(.*)$/i);
+      if (findingMatch) {
+        const severity = findingMatch[1].toLowerCase();
+        const title = cleanText(findingMatch[2]);
+        const badgeColors: Record<string, string> = {
+          critical: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+          high: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+          medium: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+          low: 'bg-zinc-800 text-zinc-300 border-zinc-700',
+        };
+        return (
+          <div key={idx} className="mt-4 mb-1.5 flex items-center gap-2 font-medium">
+            <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase border ${badgeColors[severity] || badgeColors.low}`}>
+              {findingMatch[1]}
+            </span>
+            <span className="text-zinc-200 font-semibold">{title}</span>
+          </div>
+        );
+      }
+
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        const itemContent = cleanText(trimmed.replace(/^[-*]\s+/, ''));
+        const colonIdx = itemContent.indexOf(':');
+        if (colonIdx > 0 && colonIdx < 30) {
+          const label = itemContent.substring(0, colonIdx);
+          const val = itemContent.substring(colonIdx + 1);
+          return (
+            <li key={idx} className="text-zinc-400 ml-4 list-disc mb-1 leading-relaxed text-sm">
+              <span className="text-zinc-200 font-medium">{label}:</span>{val}
+            </li>
+          );
+        }
+        return (
+          <li key={idx} className="text-zinc-400 ml-4 list-disc mb-1 leading-relaxed text-sm">
+            {itemContent}
+          </li>
+        );
+      }
+
+      if (trimmed.startsWith('|')) {
+        if (trimmed.includes('---')) return null;
+        const cells = trimmed.split('|').map(c => cleanText(c.trim())).filter((c, i, a) => i > 0 && i < a.length - 1);
+        return (
+          <div key={idx} className="grid grid-cols-3 gap-4 py-2 border-b border-zinc-900 text-sm text-zinc-400">
             {cells.map((cell, cidx) => (
               <span key={cidx} className={cidx === 0 ? "font-semibold text-zinc-300" : ""}>{cell}</span>
             ))}
           </div>
         );
       }
-      if (line.trim() === '---') {
-        return <hr key={idx} className="my-6 border-zinc-900" />;
+
+      if (trimmed === '---') {
+        return <hr key={idx} className="my-5 border-zinc-900" />;
       }
-      if (!line.trim()) return <div key={idx} className="h-2" />;
-      
-      return <p key={idx} className="text-zinc-400 text-sm leading-relaxed mb-2.5">{line}</p>;
+
+      if (!trimmed) return <div key={idx} className="h-2" />;
+
+      const numMatch = trimmed.match(/^(\d+\.)\s*(.*)$/);
+      if (numMatch) {
+        const num = numMatch[1];
+        const content = cleanText(numMatch[2]);
+        return (
+          <p key={idx} className="text-zinc-200 text-sm font-semibold mt-3 mb-1">
+            <span className="text-violet-400 mr-1.5">{num}</span>
+            {content}
+          </p>
+        );
+      }
+
+      return (
+        <p key={idx} className="text-zinc-400 text-sm leading-relaxed mb-2.5">
+          {cleanText(trimmed)}
+        </p>
+      );
     });
   };
 

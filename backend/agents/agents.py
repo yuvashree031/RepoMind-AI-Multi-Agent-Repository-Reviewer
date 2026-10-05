@@ -785,17 +785,17 @@ def report_agent(state: AgentState) -> Dict[str, Any]:
     lang_breakdown = ", ".join([f"{l} ({d['percentage']}%)" for l, d in languages.items()]) or "Unknown"
     
     report = f"""# RepoMind AI Engineering Review Report
-*Generated on: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}*
+Generated on: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 ## 1. Executive Summary
 
-This report presents an automated, multi-agent evaluation of the repository **{repo_url}**. RepoMind AI simulated audits from senior software engineers, security analysts, system designers, and DevOps engineers to evaluate code quality, identify vulnerabilities, map architectures, and inspect deployment processes.
+This report presents an automated, multi-agent evaluation of the repository {repo_url}. RepoMind AI simulated audits from senior software engineers, security analysts, system designers, and DevOps engineers to evaluate code quality, identify vulnerabilities, map architectures, and inspect deployment processes.
 
 ### Repository Health Scorecard
 
 | Category | Score | Status |
 | :--- | :--- | :--- |
-| **Overall Score** | **{overall_score}/100** | **{"Healthy" if overall_score >= 80 else "Needs Improvement" if overall_score >= 60 else "Critical Action Required"}** |
+| Overall Score | {overall_score}/100 | {"Healthy" if overall_score >= 80 else "Needs Improvement" if overall_score >= 60 else "Critical Action Required"} |
 | Code Quality | {scores.get("code_quality")}/100 | {"Optimal" if scores.get("code_quality") >= 80 else "Fair" if scores.get("code_quality") >= 60 else "Refactoring Needed"} |
 | Security & Secrets | {scores.get("security")}/100 | {"Secure" if scores.get("security") >= 85 else "Weakness Detected" if scores.get("security") >= 60 else "Vulnerable"} |
 | System Architecture | {scores.get("architecture")}/100 | {"Modular" if scores.get("architecture") >= 80 else "Monolithic / Tight Coupling" if scores.get("architecture") >= 60 else "Legacy Grid"} |
@@ -804,10 +804,10 @@ This report presents an automated, multi-agent evaluation of the repository **{r
 ---
 
 ## 2. Core Repository Metadata
-- **Repository URL**: [{repo_url}]({repo_url})
-- **Primary Languages**: {lang_breakdown}
-- **Detected Frameworks**: {', '.join(frameworks) or 'None'}
-- **Total Cataloged Files**: {len(files_list)}
+- Repository URL: {repo_url}
+- Primary Languages: {lang_breakdown}
+- Detected Frameworks: {', '.join(frameworks) or 'None'}
+- Total Cataloged Files: {len(files_list)}
 
 ---
 
@@ -816,38 +816,38 @@ This report presents an automated, multi-agent evaluation of the repository **{r
 """
     
     if not quality_findings:
-        report += "\n*No significant code quality issues detected. Code shows clean design structures.*\n"
+        report += "\nNo significant code quality issues detected. Code shows clean design structures.\n"
     else:
         for fnd in quality_findings:
             report += f"""
-#### [{fnd.get('severity', 'Low')}] {fnd.get('type', 'Code Smell')}
-- **File**: `{fnd.get('file_path')}` (Line {fnd.get('line_number')})
-- **Description**: {fnd.get('description')}
-- **Suggestion**: {fnd.get('suggestion')}
+[{fnd.get('severity', 'Low')}] {fnd.get('type', 'Code Smell')}
+- File: {fnd.get('file_path')} (Line {fnd.get('line_number')})
+- Description: {fnd.get('description')}
+- Suggestion: {fnd.get('suggestion')}
 """
             
     report += f"""
 ---
 
 ## 4. Security & Vulnerability Analysis
-- **Critical Issues**: {criticals}
-- **High Issues**: {highs}
-- **Medium Issues**: {mediums}
-- **Low Issues**: {lows}
+- Critical Issues: {criticals}
+- High Issues: {highs}
+- Medium Issues: {mediums}
+- Low Issues: {lows}
 
 ### Findings Checklist
 """
     
     if not security_findings:
-        report += "\n*No secrets or common vulnerabilities detected during static checks. Core configurations are compliant.*\n"
+        report += "\nNo secrets or common vulnerabilities detected during static checks. Core configurations are compliant.\n"
     else:
         for fnd in security_findings:
             report += f"""
-#### [{fnd.get('severity', 'Low')}] {fnd.get('vulnerability_type', 'Vulnerability')}
-- **File**: `{fnd.get('file_path')}` (Line {fnd.get('line_number')})
-- **Description**: {fnd.get('description')}
-- **Remediation**: {fnd.get('recommendation')}
-- **Snippet**: `{fnd.get('code_snippet', '').strip()}`
+[{fnd.get('severity', 'Low')}] {fnd.get('vulnerability_type', 'Vulnerability')}
+- File: {fnd.get('file_path')} (Line {fnd.get('line_number')})
+- Description: {fnd.get('description')}
+- Remediation: {fnd.get('recommendation')}
+- Snippet: {fnd.get('code_snippet', '').strip()}
 """
             
     report += f"""
@@ -862,9 +862,9 @@ Below is the system structural mapping compiled by the Architecture Agent:
 ```
 
 ### Modular Components Detected
-- **Controllers/Endpoints**: {len(architecture_components.get('controllers', []))} files mapped.
-- **Models/Schemas**: {len(architecture_components.get('models', []))} database models/schemas mapped.
-- **Business Services**: {len(architecture_components.get('services', []))} service helper classes.
+- Controllers/Endpoints: {len(architecture_components.get('controllers', []))} files mapped.
+- Models/Schemas: {len(architecture_components.get('models', []))} database models/schemas mapped.
+- Business Services: {len(architecture_components.get('services', []))} service helper classes.
 
 ---
 
@@ -873,26 +873,26 @@ Below is the system structural mapping compiled by the Architecture Agent:
 """
     
     if not devops_findings:
-        report += "\n*Full Docker support and automated GitHub CI/CD setup detected. Deployment structures are optimal.*\n"
+        report += "\nFull Docker support and automated GitHub CI/CD setup detected. Deployment structures are optimal.\n"
     else:
         for fnd in devops_findings:
             report += f"""
-#### [{fnd.get('severity', 'Low')}] {fnd.get('type', 'DevOps Practice')}
-- **File**: `{fnd.get('file_path')}`
-- **Description**: {fnd.get('description')}
-- **Remediation**: {fnd.get('recommendation')}
+[{fnd.get('severity', 'Low')}] {fnd.get('type', 'DevOps Practice')}
+- File: {fnd.get('file_path')}
+- Description: {fnd.get('description')}
+- Remediation: {fnd.get('recommendation')}
 """
             
     report += """
 ---
 
 ## 7. Actionable Roadmap & Priority Steps
-1. **Critical Actions (Next 24-48 Hours)**:
+1. Critical Actions (Next 24-48 Hours):
    - Resolve any Critical or High security findings (secrets removal, SQLi parameterized bindings).
-2. **Short Term (Next 1-2 Weeks)**:
+2. Short Term (Next 1-2 Weeks):
    - Introduce unit testing configurations and automate runs inside a CI/CD GitHub action.
    - Refactor bloated helper scripts or functions exceeding cyclomatic complexity guidelines.
-3. **Strategic Improvements (Next 1-3 Months)**:
+3. Strategic Improvements (Next 1-3 Months):
    - Restructure modular service classes to decouple database models from presentation APIs.
    - Secure Docker container image builds by setting up custom, non-privileged system user logins.
 """
