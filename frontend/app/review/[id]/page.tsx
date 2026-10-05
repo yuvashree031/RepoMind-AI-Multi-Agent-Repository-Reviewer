@@ -35,24 +35,21 @@ export default function ReviewDetailPage() {
 
   useEffect(() => {
     if (!reviewId) return;
-    fetchDetail();
-  }, [reviewId]);
-
-  const fetchDetail = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      if (reviewId) {
+    const fetchDetail = async () => {
+      setLoading(true);
+      setError(null);
+      try {
         const data = await apiService.getReviewDetail(reviewId);
         setReview(data);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || 'Failed to load review details.');
+      } finally {
+        setLoading(false);
       }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Failed to load review details.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchDetail();
+  }, [reviewId]);
 
   
   useEffect(() => {
@@ -255,7 +252,7 @@ export default function ReviewDetailPage() {
         <a
           href={apiService.getReportDownloadUrl(review.id)}
           download
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer"
+          className="report-download-button flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer"
         >
           <Download className="w-4 h-4" /> Download Report
         </a>

@@ -10,13 +10,22 @@ venv/
 
 # Local environment files
 backend/.env
+.env
+.env.*
+
+# Runtime cache & databases
+cache/
+*.db
+*.sqlite3
 
 # Node
 node_modules/
 .next/
 out/
+*.tsbuildinfo
 
 # Editor
 .vscode/
 .idea/
 .DS_Store
+

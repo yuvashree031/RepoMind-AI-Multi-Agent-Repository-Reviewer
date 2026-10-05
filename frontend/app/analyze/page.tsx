@@ -33,37 +33,53 @@ function AnalyzePageContent() {
       return;
     }
 
-    let intervalId: NodeJS.Timeout;
+    let disposed = false;
+    let isTerminal = false;
+    let pollTimeout: ReturnType<typeof setTimeout>;
+    let redirectTimeout: ReturnType<typeof setTimeout>;
 
     const pollStatus = async () => {
       try {
         const data = await apiService.getReviewStatus(reviewId);
+        if (disposed) return;
         setStatus(data.status);
         setLogs(data.logs || []);
         
         if (data.status === 'COMPLETED') {
-          clearInterval(intervalId);
-          
-          setTimeout(() => {
+          isTerminal = true;
+          redirectTimeout = setTimeout(() => {
             router.push(`/review/${reviewId}`);
           }, 1500);
         } else if (data.status === 'FAILED') {
-          clearInterval(intervalId);
+          isTerminal = true;
           setError(data.error || 'The multi-agent analysis failed. Please verify the repository URL.');
         }
-      } catch (err: any) {
-        console.error('Polling error:', err);
-        
+      } catch (err: unknown) {
+        if (disposed) return;
+        const statusCode = typeof err === 'object' && err !== null && 'status' in err
+          ? err.status
+          : undefined;
+        if (typeof statusCode === 'number') {
+          isTerminal = true;
+          setStatus('FAILED');
+          setError(err instanceof Error ? err.message : 'Unable to retrieve analysis status.');
+        } else {
+          console.warn('Status poll failed; retrying:', err);
+        }
+      } finally {
+        if (!disposed && !isTerminal) {
+          pollTimeout = setTimeout(pollStatus, 2000);
+        }
       }
     };
 
-    
     pollStatus();
-    
-    
-    intervalId = setInterval(pollStatus, 2000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      disposed = true;
+      clearTimeout(pollTimeout);
+      clearTimeout(redirectTimeout);
+    };
   }, [reviewId, router]);
 
   

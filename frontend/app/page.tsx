@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiService, ReviewSummary } from '../services/api';
 import {
@@ -26,6 +26,21 @@ export default function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
+  const fetchHistory = useCallback(async () => {
+    setFetchingHistory(true);
+    try {
+      const data = await apiService.getReviews();
+      setReviews(data);
+    } catch (err) {
+      if (err instanceof Error && 'status' in err && err.status === 401) {
+        apiService.logout();
+        router.push('/login');
+      }
+    } finally {
+      setFetchingHistory(false);
+    }
+  }, [router]);
+
   useEffect(() => {
     if (!apiService.isAuthenticated()) {
       router.push('/login');
@@ -33,19 +48,7 @@ export default function DashboardPage() {
       setIsAuthenticated(true);
       fetchHistory();
     }
-  }, [router]);
-
-  const fetchHistory = async () => {
-    setFetchingHistory(true);
-    try {
-      const data = await apiService.getReviews();
-      setReviews(data);
-    } catch (err) {
-      console.error('Failed to load history:', err);
-    } finally {
-      setFetchingHistory(false);
-    }
-  };
+  }, [fetchHistory, router]);
 
   const handleAuditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,7 +168,7 @@ export default function DashboardPage() {
             <button
               type="submit"
               disabled={loading || !repoUrl}
-              className="w-full py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-medium rounded-xl flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_40px_rgba(139,92,246,0.5)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="analysis-submit-button w-full py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-medium rounded-xl flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_40px_rgba(139,92,246,0.5)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

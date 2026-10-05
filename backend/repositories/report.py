@@ -14,3 +14,4 @@ class ReportRepository(BaseRepository[Report]):
         """
         doc = await self.collection.find_one({"review_id": review_id})
         return self.model_class(**doc) if doc else None
+

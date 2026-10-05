@@ -7,7 +7,8 @@ import requests
 from typing import Dict, List, Any, Optional
 import git
 from git.exc import GitCommandError
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 from backend.agents.state import AgentState
@@ -21,9 +22,10 @@ load_dotenv(dotenv_path)
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 HAS_GEMINI_KEY = False
+gemini_client = None
 if GEMINI_API_KEY and GEMINI_API_KEY != "YOUR_GEMINI_API_KEY_HERE" and len(GEMINI_API_KEY) > 10:
     try:
-        genai.configure(api_key=GEMINI_API_KEY)
+        gemini_client = genai.Client(api_key=GEMINI_API_KEY)
         HAS_GEMINI_KEY = True
     except Exception as e:
         print(f"Error configuring Gemini API: {e}")
@@ -32,11 +34,13 @@ def call_gemini_llm(prompt: str, system_instruction: str = "") -> str:
     if not HAS_GEMINI_KEY:
         return ""
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
-            system_instruction=system_instruction
+        response = gemini_client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction or None
+            )
         )
-        response = model.generate_content(prompt)
         return response.text
     except Exception as e:
         print(f"Gemini LLM Call Failed: {e}")
@@ -897,10 +901,20 @@ Below is the system structural mapping compiled by the Architecture Agent:
     
     if repo_path and os.path.exists(repo_path):
         try:
-            shutil.rmtree(repo_path, ignore_errors=True)
+            def _remove_readonly(func, path, _):
+                import stat
+                try:
+                    os.chmod(path, stat.S_IWRITE)
+                    func(path)
+                except Exception:
+                    pass
+            shutil.rmtree(repo_path, onerror=_remove_readonly)
             agent_logs.append("Temporary directory cleaned up.")
         except Exception:
-            pass
+            try:
+                shutil.rmtree(repo_path, ignore_errors=True)
+            except Exception:
+                pass
             
     return {
         "scores": {"overall": overall_score},

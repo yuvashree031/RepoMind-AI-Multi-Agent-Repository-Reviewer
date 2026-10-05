@@ -5,6 +5,7 @@ from backend.database.collections import (
     USERS_COLLECTION,
     REPOSITORIES_COLLECTION,
     REVIEWS_COLLECTION,
+    REPORTS_COLLECTION,
     ANALYSIS_HISTORY_COLLECTION
 )
 
@@ -25,6 +26,9 @@ async def create_indexes():
 
         await db[REVIEWS_COLLECTION].create_index([("repository_id", ASCENDING)])
         logger.info(f"Verified index on {REVIEWS_COLLECTION}(repository_id)")
+
+        await db[REPORTS_COLLECTION].create_index([("review_id", ASCENDING)])
+        logger.info(f"Verified index on {REPORTS_COLLECTION}(review_id)")
 
         await db[ANALYSIS_HISTORY_COLLECTION].create_index([("repository_id", ASCENDING)])
         logger.info(f"Verified index on {ANALYSIS_HISTORY_COLLECTION}(repository_id)")

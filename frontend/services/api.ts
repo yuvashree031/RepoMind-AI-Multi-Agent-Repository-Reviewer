@@ -214,6 +214,7 @@ export const apiService = {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify({ url, token }),
+      signal: AbortSignal.timeout(15000),
     });
     
     if (!response.ok) {
@@ -232,7 +233,9 @@ export const apiService = {
       headers: getHeaders(true)
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch review history');
+      const error = new Error(`Failed to fetch review history (${response.status})`) as Error & { status: number };
+      error.status = response.status;
+      throw error;
     }
     return response.json();
   },
@@ -255,10 +258,20 @@ export const apiService = {
    */
   async getReviewStatus(reviewId: string): Promise<StatusResponse> {
     const response = await fetch(`${API_BASE_URL}/api/reviews/${reviewId}/status`, {
-      headers: getHeaders(true)
+      headers: getHeaders(true),
+      signal: AbortSignal.timeout(10000)
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch review status');
+      let detail = '';
+      try {
+        const body = await response.json();
+        detail = typeof body.detail === 'string' ? `: ${body.detail}` : '';
+      } catch {
+        // Keep the generic message when the server did not return JSON.
+      }
+      const error = new Error(`Failed to fetch review status (${response.status})${detail}`) as Error & { status: number };
+      error.status = response.status;
+      throw error;
     }
     return response.json();
   },

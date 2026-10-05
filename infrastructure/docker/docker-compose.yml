@@ -1,19 +1,20 @@
 version: '3.8'
 
 services:
-  # 1. PostgreSQL DB - if local database or else use online database (Mongo DB)
+  # 1. MongoDB database used by the FastAPI repositories
   db:
-    image: postgres:15-alpine
+    image: mongo:7
     container_name: repomind_db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: repomind
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' localhost:27017/repomind | grep 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
     networks:
       - repomind_net
 
@@ -38,12 +39,15 @@ services:
     container_name: repomind_backend
     restart: always
     depends_on:
-      - db
-      - qdrant
+      db:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgrespassword@db:5432/repomind
+      - MONGODB_URI=mongodb://db:27017
+      - DATABASE_NAME=repomind
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
       - QDRANT_IN_MEMORY=False
@@ -71,7 +75,7 @@ services:
       - repomind_net
 
 volumes:
-  postgres_data:
+  mongo_data:
   qdrant_data:
   repos_cache:
 

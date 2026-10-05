@@ -10,7 +10,7 @@ API_URL = os.getenv("REPOMIND_API_URL", "http://localhost:8000")
 @mcp.tool()
 def list_analyzed_repositories() -> str:
     """
-    Fetches the list of all repositories analyzed by RepoMind AI
+    Fetches the list of all repositories analyzed by this
     including their status and overall quality scores.
     """
     try:
