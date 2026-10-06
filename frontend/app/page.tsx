@@ -11,14 +11,12 @@ import {
   Terminal,
   Search,
   ArrowRight,
-  RefreshCw,
-  FolderLock
+  RefreshCw
 } from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [repoUrl, setRepoUrl] = useState('');
-  const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reviews, setReviews] = useState<ReviewSummary[]>([]);
@@ -58,7 +56,7 @@ export default function DashboardPage() {
     setError(null);
 
     try {
-      const result = await apiService.analyzeRepository(repoUrl, token || undefined);
+      const result = await apiService.analyzeRepository(repoUrl);
 
       router.push(`/analyze?id=${result.review_id}`);
     } catch (err: any) {
@@ -135,25 +133,6 @@ export default function DashboardPage() {
                   value={repoUrl}
                   onChange={(e) => setRepoUrl(e.target.value)}
                   required
-                  className="w-full pl-12 pr-4 py-3.5 bg-zinc-950/80 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all font-sans text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">
-                  GitHub Personal Access Token (PAT)
-                </label>
-                <span className="text-[10px] text-zinc-500">Only required for private repositories</span>
-              </div>
-              <div className="relative flex items-center">
-                <FolderLock className="absolute left-4 w-5 h-5 text-zinc-500" />
-                <input
-                  type="password"
-                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx"
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
                   className="w-full pl-12 pr-4 py-3.5 bg-zinc-950/80 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all font-sans text-sm"
                 />
               </div>

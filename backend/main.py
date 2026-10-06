@@ -225,19 +225,18 @@ async def analyze_repository(
     Cloning and evaluation run in the background. (Auth Required)
     """
     url = payload.url.strip()
-    if not (url.startswith("http://") or url.startswith("https://")):
+    import re as _re
+    github_url_pattern = _re.compile(
+        r'^https://github\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+(?:\.git)?/?$'
+    )
+    if not github_url_pattern.match(url):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid repository URL. Must start with http:// or https://"
+            detail="Invalid GitHub repository URL. Expected format: https://github.com/owner/repository-name"
         )
-        
+
     clean_url = url.rstrip("/")
     parts = clean_url.split("/")
-    if len(parts) < 5:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid GitHub repository URL structure. Must be https://github.com/owner/name"
-        )
         
     owner = parts[-2]
     name = parts[-1].replace(".git", "")
